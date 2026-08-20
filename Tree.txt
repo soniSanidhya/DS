@@ -1,0 +1,203 @@
+class Node {
+	Node l,r;
+	char data;
+	Node(char x) {
+		data = x;
+	}
+}
+
+class BT {
+	Node root;
+	BT()
+	{
+		root = null;
+	}
+
+	boolean insert(Node root, char data, char node, int f) {
+		if(root == null ) {
+			this.root = new Node(data);
+			return true;
+		}
+		Node target = findNode(root, node);
+		if(target == null) return false;
+
+		if(f == 0 && target.l == null) {
+			target.l = new Node(data);
+			return true;
+		}
+		if (f == 1 && target.r == null) {
+			target.r = new Node(data);
+			return true;
+		}
+		return false;
+	}
+	Node findNode(Node root, char x) {
+		if (root == null) return null;
+		if (root.data == x) return root;
+
+		Node left = findNode(root.l, x);
+		if (left != null) return left;
+
+		Node right = findNode(root.r, x);
+		return right;
+
+	}
+
+	void printInorder(Node root) {
+		if(root != null) {
+			printInorder(root.l);
+			System.out.print(root.data + "\t");
+			printInorder(root.r);
+		}
+	}
+
+	int node0Child(Node root) {
+		int value = 0;
+		if(root != null)
+			if(root.l == null && root.r == null) {
+				return 1;
+			} else {
+				value = node0Child(root.l) + node0Child(root.r);
+			}
+		return value;
+	}
+
+	int node1Child(Node root) {
+		int value = 0;
+		if(root != null) {
+			if(root.l != null && root.r == null) {
+				value = value + 1 + node1Child(root.l);
+			} else if(root.r != null && root.l == null) {
+				value =  1 + node1Child(root.r);
+			}
+			else {
+				value = node1Child(root.r) + node1Child(root.l);
+			}
+		}
+		return value;
+	}
+
+	int node2Child(Node root) {
+		int value = 0;
+		if(root != null) {
+			if(root.l != null && root.r != null) {
+				value = 1 + node2Child(root.l) + node2Child(root.r);
+			} else {
+				value = node2Child(root.l) + node2Child(root.r);
+			}
+		}
+		return value;
+	}
+
+	int nodeLChild(Node root) {
+		int value = 0;
+		if(root != null) {
+			if(root.l != null && root.r == null) {
+				value = 1 + nodeLChild(root.l);
+			} else {
+				value = nodeLChild(root.l) + nodeLChild(root.r);
+			}
+		}
+		return value;
+	}
+	int nodeRChild(Node root) {
+		int value = 0;
+		if(root != null) {
+			if(root.l == null && root.r != null) {
+				value = 1 + nodeRChild(root.r);
+			} else {
+				value = nodeRChild(root.l) + nodeRChild(root.r);
+			}
+		}
+		return value;
+	}
+	int nodeInternal(Node root) {
+		int value = 0;
+		if(root != null) {
+			if(root.l != null || root.r != null) {
+				value = 1 + nodeInternal(root.l) + nodeInternal(root.r) ;
+			} else {
+				value = nodeInternal(root.l) + nodeInternal(root.r);
+			}
+		}
+		return value;
+	}
+
+	int nodeExternal(Node root) {
+		int value = 0;
+		if(root != null) {
+			if(root.l == null && root.r == null) {
+				value = 1;
+			} else {
+				value = nodeExternal(root.l) + nodeExternal(root.r);
+			}
+		}
+		return value;
+	}
+	int noOfNodes(Node root) {
+		int value = 0;
+		if(root != null) {
+			value = 1 + noOfNodes(root.l) + noOfNodes(root.r);
+		}
+		return value;
+	}
+	int noOfEdges(Node root) {
+		return noOfNodes(root) - 1;
+	}
+	int noOfLinks(Node root) {
+		return noOfNodes(root) * 2;
+	}
+
+	int noOfNullLinks(Node root) {
+		int value = 0;
+		if(root != null) {
+			if(root.l != null && root.r == null ) {
+				value = 1 + noOfNullLinks(root.l);
+			}
+			else if(root.r != null && root.l == null ) {
+				value = 1 + noOfNullLinks(root.r);
+			} else if(root.r == null && root.l == null) {
+				value = 2;
+			}
+			else {
+				value = noOfNullLinks(root.l) + noOfNullLinks(root.r);
+			}
+		}
+		return value;
+	}
+
+
+
+}
+
+class Main {
+	public static void main(String args[]) {
+		BT tree = new BT();
+
+		tree.insert(tree.root, 'a', 'a',0);
+		tree.insert(tree.root, 'b', 'a', 0);
+		tree.insert(tree.root, 'f', 'a', 1);
+		tree.insert(tree.root, 'c', 'b', 0);
+		tree.insert(tree.root, 'd', 'c', 0);
+		tree.insert(tree.root, 'e', 'c', 1);
+		tree.insert(tree.root, 'g', 'f', 0);
+		tree.insert(tree.root, 'h', 'g', 1);
+		tree.insert(tree.root, 'k', 'g', 0);
+		tree.insert(tree.root, 'i', 'h', 0);
+		tree.insert(tree.root, 'j', 'h', 1);
+
+		System.out.println(tree.node0Child(tree.root));
+		System.out.println(tree.node1Child(tree.root));
+		System.out.println(tree.node2Child(tree.root));
+		System.out.println(tree.nodeLChild(tree.root));
+		System.out.println(tree.nodeRChild(tree.root));
+		System.out.println(tree.nodeInternal(tree.root));
+		System.out.println(tree.nodeExternal(tree.root));
+		System.out.println(tree.noOfNodes(tree.root));
+		System.out.println(tree.noOfNullLinks(tree.root));
+		System.out.println(tree.noOfLinks(tree.root));
+
+// 		tree.printInorder(tree.root);
+
+	}
+}
