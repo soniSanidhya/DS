@@ -214,6 +214,25 @@ public:
     }
 };
 
+vector<int> topKFrequent(vector<int> &nums, int k)
+{
+
+    unordered_map<int, int> m;
+    for (auto a : nums)
+        m[a]++;
+    vector<pair<int,int>> vec;
+    for(auto a : m){
+        vec.push_back({a.second , a.first});
+    }
+    priority_queue<pair<int, int>> pq(vec.begin() , vec.end());
+    vector<int> res;
+    while(k--){
+        res.push_back(pq.top().second);
+        pq.pop();
+    }
+    return res;
+}
+
 int main()
 {
     MedianFinder mf;
